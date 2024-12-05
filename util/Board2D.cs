@@ -33,6 +33,12 @@ public class Board2D<T> where T : IFormattable, IComparable, new()
     {
         return Board[coordinate];
     }
+
+    public T this[Coordinate coordinate]
+    {
+        get => Board[coordinate];
+        set => Board[coordinate] = value;
+    }
     
     public IEnumerable<Coordinate> AllCoordinates()
     {
@@ -125,6 +131,22 @@ public class Board2D<T> where T : IFormattable, IComparable, new()
             distance += 1;
             if (Get(coordinate).CompareTo(value) >= 0)
                 return distance;
+        }
+    }
+
+    public IEnumerable<string> GetStringsOfLength(Coordinate coordinate, int length)
+    {
+        foreach (var d in NeighbourDeltas)
+        {
+            var value = "" + Board[coordinate];
+            var c = coordinate;
+            for (var i = 1; i < length; i++)
+            {
+                c += d;
+                if (!IsOnBoard(c)) break;
+                value += Board[c];
+            }
+            if (value.Length == length) yield return value;
         }
     }
     

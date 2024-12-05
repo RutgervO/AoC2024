@@ -23,21 +23,22 @@ public readonly struct Coordinate : IComparable<Coordinate>, IComparable
         Y = coordinate.Y;
     }
 
-    public Coordinate Add(Coordinate other)
-    {
-        return new Coordinate(X + other.X, Y + other.Y);
-    }
+    public Coordinate Add(Coordinate o) => new(X + o.X, Y + o.Y);
+    public Coordinate Add(Direction o) => new(X + o.X, Y + o.Y);
+    public Coordinate Add((int X, int Y) o) => new(X + o.X, Y + o.Y);
+
+    public static Coordinate operator +(Coordinate a, Coordinate b) => a.Add(b);
+    public static Coordinate operator +(Coordinate a, Direction b) => a.Add(b);
+    public static Coordinate operator +(Coordinate a, (int X, int Y) b) => a.Add(b);
     
-    public Coordinate Add(Direction other)
-    {
-        return new Coordinate(X + other.X, Y + other.Y);
-    }
-
-    public Coordinate Subtract(Coordinate other)
-    {
-        return new Coordinate(X - other.X, Y - other.Y);
-    }
-
+    public Coordinate Subtract(Coordinate other) => new(X - other.X, Y - other.Y);
+    public Coordinate Subtract(Direction other) => new(X - other.X, Y - other.Y);
+    public Coordinate Subtract((int X, int Y) other) => new(X - other.X, Y - other.Y);
+    
+    public static Coordinate operator -(Coordinate a, Coordinate b) => a.Subtract(b);
+    public static Coordinate operator -(Coordinate a, Direction b) => a.Subtract(b);
+    public static Coordinate operator -(Coordinate a, (int X, int Y) b) => a.Subtract(b);
+    
     public Coordinate AbsMax(int max)
     {
         return new Coordinate(Math.Min(Math.Max(X, -max), max), Math.Min(Math.Max(Y, -max), max));
@@ -66,20 +67,17 @@ public readonly struct Coordinate : IComparable<Coordinate>, IComparable
         // System.Object, which defines Equals as reference equality.
         return X == p.X && Y == p.Y;
     }
-
+    
     public override int GetHashCode() => (X, Y).GetHashCode();
 
-    public static bool operator ==(Coordinate lhs, Coordinate rhs)
-    {
-        return lhs.Equals(rhs);
-    }
-
+    public static bool operator ==(Coordinate lhs, Coordinate rhs) => lhs.Equals(rhs);
     public static bool operator !=(Coordinate lhs, Coordinate rhs) => !(lhs == rhs);
 
     public override string ToString()
     {
         return $"({X},{Y})";
     }
+    
     public int CompareTo(Coordinate other)
     {
         var xComparison = X.CompareTo(other.X);
@@ -93,29 +91,10 @@ public readonly struct Coordinate : IComparable<Coordinate>, IComparable
         return obj is Coordinate other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Coordinate)}");
     }
 
-    public static bool operator <(Coordinate left, Coordinate right)
-    {
-        return left.CompareTo(right) < 0;
-    }
-
-    public static bool operator >(Coordinate left, Coordinate right)
-    {
-        return left.CompareTo(right) > 0;
-    }
-
-    public static bool operator <=(Coordinate left, Coordinate right)
-    {
-        return left.CompareTo(right) <= 0;
-    }
-
-    public static bool operator >=(Coordinate left, Coordinate right)
-    {
-        return left.CompareTo(right) >= 0;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return obj is Coordinate other && Equals(other);
-    }
+    public static bool operator <(Coordinate left, Coordinate right) => left.CompareTo(right) < 0;
+    public static bool operator >(Coordinate left, Coordinate right) => left.CompareTo(right) > 0;
+    public static bool operator <=(Coordinate left, Coordinate right) => left.CompareTo(right) <= 0;
+    public static bool operator >=(Coordinate left, Coordinate right) => left.CompareTo(right) >= 0;
+    public override bool Equals(object? obj) => obj is Coordinate other && Equals(other);
 
 }
